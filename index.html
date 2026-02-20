@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>f3wv // cyberdeck</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff00cc;
+      --dark: #0a0015;
+      --darker: #05000a;
+      --glitch: #ff0055;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--darker);
+      color: #e0e0ff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      background-image: 
+        linear-gradient(rgba(10,0,20,0.85), rgba(10,0,20,0.85)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" /><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.07"/></svg>');
+      background-attachment: fixed;
+    }
+
+    canvas#particles {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .glitch {
+      position: relative;
+      color: var(--neon-cyan);
+      font-size: clamp(3.5rem, 12vw, 8rem);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-shadow: 
+        0.05em 0 0 var(--glitch),
+        -0.05em 0 0 var(--neon-magenta),
+        0.025em 0.05em 0 var(--glitch),
+        -0.025em -0.05em 0 var(--neon-magenta);
+      animation: glitch 2s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 0.05em 0 0 var(--glitch), -0.05em 0 0 var(--neon-magenta); }
+      14% { text-shadow: 0.05em 0 0 var(--glitch), -0.05em 0 0 var(--neon-magenta); }
+      15% { text-shadow: -0.05em -0.025em 0 var(--glitch), 0.025em 0.025em 0 var(--neon-magenta); }
+      49% { text-shadow: -0.05em -0.025em 0 var(--glitch), 0.025em 0.025em 0 var(--neon-magenta); }
+      50% { text-shadow: 0.05em 0.025em 0 var(--glitch), 0.05em 0 0 var(--neon-magenta); }
+      99% { text-shadow: 0.05em 0.025em 0 var(--glitch), 0.05em 0 0 var(--neon-magenta); }
+      100% { text-shadow: -0.025em 0 0 var(--glitch), -0.025em 0 0 var(--neon-magenta); }
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10,0,20,0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,240,255,0.2);
+      z-index: 100;
+      padding: 1rem 0;
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: var(--neon-cyan);
+      text-decoration: none;
+      margin: 0 1.5rem;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--neon-magenta);
+      text-shadow: 0 0 10px var(--neon-magenta);
+      transform: scale(1.1);
+    }
+
+    main {
+      padding: 8rem 0 4rem;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 6rem;
+    }
+
+    .section {
+      margin: 6rem 0;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 1s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .project-card {
+      background: rgba(22,27,34,0.6);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.4s;
+      backdrop-filter: blur(4px);
+    }
+
+    .project-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 40px rgba(88,166,255,0.15);
+      border-color: var(--neon-cyan);
+    }
+
+    .project-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .project-info {
+      padding: 1.5rem;
+    }
+
+    .project-info h3 {
+      color: var(--neon-cyan);
+      margin-bottom: 0.8rem;
+    }
+
+    .project-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .project-links a {
+      color: var(--neon-magenta);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .project-links a:hover {
+      text-shadow: 0 0 10px var(--neon-magenta);
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      color: #8b949e;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <nav>
+    <div class="container">
+      <h1 class="glitch" style="font-size:2rem;">f3wv</h1>
+      <div>
+        <a href="#projects">PROJECTS</a>
+        <a href="#skills">SKILLS</a>
+        <a href="#contact">CONTACT</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <h1 class="glitch">f3wv</h1>
+      <p style="font-size:1.5rem; color:var(--neon-magenta); margin:1rem 0;">cyberdeck // bot architect // digital ghost</p>
+      <p style="max-width:600px; margin:2rem auto; color:#a0a0ff;">building chaotic, neon-drenched discord bots in the undergrid. java + python. crypto only. no corporate leash.</p>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="container">
+        <h2>PROJECTS</h2>
+        <div class="projects-grid">
+          <div class="project-card">
+            <img src="https://cdn.discordapp.com/attachments/1455271553657999484/1474190724634247270/IMG_1043.png" alt="Cloudy">
+            <div class="project-info">
+              <h3>CLOUDY</h3>
+              <p>gamblecore economy engine. slots, dice, bets, rigged leaderboards, admin shadow controls.</p>
+              <div class="project-links">
+                <a href="https://youtube.com/shorts/oBBSXC4X3vo?si=moTnsA_QpOU9s3DG" target="_blank">DEMO</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <img src="https://cdn.discordapp.com/attachments/1455271553657999484/1474189950269259786/IMG_1044.png" alt="Storm">
+            <div class="project-info">
+              <h3>STORM’S NOTIFICATIONS</h3>
+              <p>live-stream/upload ghost ping. custom embeds, role shadows, webhook relays.</p>
+              <div class="project-links">
+                <a href="#">NO DEMO YET</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="container">
+        <h2>SKILLS</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>LANGUAGES</h3>
+            <p>Java // Python // JS (vanilla + node)</p>
+          </div>
+          <div class="card">
+            <h3>LIBRARIES</h3>
+            <p>JDA // discord.py // nextcord // canvas // gsap (when needed)</p>
+          </div>
+          <div class="card">
+            <h3>TOOLS</h3>
+            <p>SQLite // MongoDB // Git // Docker basics // Webhooks/APIs</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container" style="text-align:center;">
+        <h2>CONNECT</h2>
+        <p style="font-size:1.8rem; margin:2rem 0;">
+          <a href="https://discord.com/users/1373459559267565588" style="color:var(--neon-magenta); text-decoration:none;">
+            discord: <strong>therealhatters</strong>
+          </a>
+        </p>
+        <p>commissions → crypto only (DM for wallet)<br>no corpo chains. no rules. just code.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Cyberpunk particle background
+    const canvas = document.createElement('canvas');
+    canvas.id = 'bg-canvas';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    for (let i = 0; i < 120; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2.5 + 0.5,
+        speedX: Math.random() * 0.6 - 0.3,
+        speedY: Math.random() * 0.6 - 0.3,
+        opacity: Math.random() * 0.4 + 0.1,
+        hue: Math.random() * 60 + 180 // cyan to purple range
+      });
+    }
+
+    function animate() {
+      ctx.fillStyle = 'rgba(10,0,20,0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = `hsl(${p.hue}, 100%, 60%)`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // connect nearby particles
+        particles.forEach(p2 => {
+          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist < 100) {
+            ctx.strokeStyle = `hsla(${p.hue}, 80%, 60%, ${1 - dist/100})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 120);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card, .section').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
